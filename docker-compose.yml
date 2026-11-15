@@ -1,0 +1,33 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: aws-devops-web
+    ports:
+      - "5002:5000"
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: devopsdb
+      DB_USER: devopsuser
+      DB_PASSWORD: devopspass123
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: aws-devops-db
+    environment:
+      POSTGRES_USER: devopsuser
+      POSTGRES_PASSWORD: devopspass123
+      POSTGRES_DB: devopsdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
